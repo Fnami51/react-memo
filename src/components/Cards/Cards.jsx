@@ -14,6 +14,15 @@ const STATUS_IN_PROGRESS = "STATUS_IN_PROGRESS";
 // Начало игры: игрок видит все карты в течении нескольких секунд
 const STATUS_PREVIEW = "STATUS_PREVIEW";
 
+function updateCardStates(allCards, falseCards) {
+  return allCards.map(card => {
+    if (falseCards.some(falseCard => falseCard.id === card.id)) {
+      return { ...card, open: false };
+    }
+    return card;
+  });
+}
+
 function getTimerValue(startDate, endDate) {
   if (!startDate && !endDate) {
     return {
@@ -41,6 +50,11 @@ function getTimerValue(startDate, endDate) {
  * previewSeconds - сколько секунд пользователь будет видеть все карты открытыми до начала игры
  */
 export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
+  //
+  const [errors, setErrors] = useState(0);
+  function addErrors() {
+    setErrors(prevErrors => prevErrors + 1);
+  }
   // В cards лежит игровое поле - массив карт и их состояние открыта\закрыта
   const [cards, setCards] = useState([]);
   // Текущий статус игры
@@ -69,6 +83,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     setStatus(STATUS_IN_PROGRESS);
   }
   function resetGame() {
+    setErrors(0);
     setGameStartDate(null);
     setGameEndDate(null);
     setTimer(getTimerValue(null, null));
@@ -123,10 +138,16 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
       return false;
     });
 
-    const playerLost = openCardsWithoutPair.length >= 2;
+    if (openCardsWithoutPair.length >= 2) {
+      addErrors();
+      const closeCards = updateCardStates(nextCards, openCardsWithoutPair);
+      setCards(closeCards);
+    }
+
+    const playerLost = errors;
 
     // "Игрок проиграл", т.к на поле есть две открытые карты без пары
-    if (playerLost) {
+    if (playerLost > 2) {
       finishGame(STATUS_LOST);
       return;
     }
@@ -191,6 +212,10 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
               <div className={styles.timerValue}>
                 <div className={styles.timerDescription}>sec</div>
                 <div>{timer.seconds.toString().padStart("2", "0")}</div>
+              </div>
+              <div className={styles.errorValue}>
+                <div className={styles.timerDescription}>errors</div>
+                <div>{errors}</div>
               </div>
             </>
           )}

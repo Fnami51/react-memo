@@ -59,6 +59,11 @@
   text-align: right;
 }
 
+.errorValue {
+  text-align: right;
+  margin-left: 70px;
+}
+
 .timerDescription {
   color: #fff;
   font-variant-numeric: lining-nums proportional-nums;
