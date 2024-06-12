@@ -5,6 +5,7 @@ import styles from "./Cards.module.css";
 import { EndGameModal } from "../../components/EndGameModal/EndGameModal";
 import { Button } from "../../components/Button/Button";
 import { Card } from "../../components/Card/Card";
+import useEasyMode from "../../hooks/useEasyMode.jsx";
 
 // Игра закончилась
 const STATUS_LOST = "STATUS_LOST";
@@ -50,7 +51,8 @@ function getTimerValue(startDate, endDate) {
  * previewSeconds - сколько секунд пользователь будет видеть все карты открытыми до начала игры
  */
 export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
-  //
+  const { easyMode } = useEasyMode();
+  //Счётчик ошибок
   const [errors, setErrors] = useState(0);
   function addErrors() {
     setErrors(prevErrors => prevErrors + 1);
@@ -138,13 +140,19 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
       return false;
     });
 
-    if (openCardsWithoutPair.length >= 2) {
-      addErrors();
-      const closeCards = updateCardStates(nextCards, openCardsWithoutPair);
-      setCards(closeCards);
-    }
+    let playerLost = 0;
 
-    const playerLost = errors;
+    if (easyMode) {
+      if (openCardsWithoutPair.length >= 2) {
+        addErrors();
+        const closeCards = updateCardStates(nextCards, openCardsWithoutPair);
+        setCards(closeCards);
+      }
+
+      playerLost = errors;
+    } else {
+      playerLost = openCardsWithoutPair.length >= 2 ? 3 : 0;
+    }
 
     // "Игрок проиграл", т.к на поле есть две открытые карты без пары
     if (playerLost > 2) {
@@ -213,10 +221,14 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
                 <div className={styles.timerDescription}>sec</div>
                 <div>{timer.seconds.toString().padStart("2", "0")}</div>
               </div>
-              <div className={styles.errorValue}>
-                <div className={styles.timerDescription}>errors</div>
-                <div>{errors}</div>
-              </div>
+              {easyMode ? (
+                <div className={styles.errorValue}>
+                  <div className={styles.timerDescription}>attempts</div>
+                  <div>{3 - errors}</div>
+                </div>
+              ) : (
+                <></>
+              )}
             </>
           )}
         </div>

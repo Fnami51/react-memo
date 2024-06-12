@@ -62,3 +62,24 @@
 .levelLink:visited {
   color: #0080c1;
 }
+
+.label{
+  display: flex;
+  column-gap: 10px;
+}
+
+.text{
+  font-family: StratosSkyeng;
+  color: #004980;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 32px;
+}
+
+.subtext{
+  font-family: StratosSkyeng;
+  color: #004980;
+  font-size: 12px;
+  font-weight: 300;
+  padding-left: 4px;
+}
