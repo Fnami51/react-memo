@@ -2,12 +2,14 @@ import styles from "./LeaderboardPage.module.css";
 import { Button } from "../../components/Button/Button.jsx";
 import { getLeaders } from "../../api.js";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export function LeaderboardPage() {
   const [leaders, setLeaders] = useState([]);
+  let navigate = useNavigate();
 
   function goToStart() {
-    console.log("Button is press");
+    navigate("/");
   }
 
   getLeaders()
@@ -18,17 +20,21 @@ export function LeaderboardPage() {
       console.error("Error APi", error.message, error);
     });
 
-  const createItems = leaders.map(leader => {
-    let time = `${Math.floor(leader.time / 60)}:${leader.time % 60}`;
-    return (
-      <li className={styles.box}>
-        <h2 className={styles.position}>№ {leader.id}</h2>
-        <h2 className={styles.name}>{leader.name}</h2>
-        <div className={styles.achievements}>В будущем добавим достижения</div>
-        <h2 className={styles.time}>{time}</h2>
-      </li>
-    );
-  });
+  let position = 0;
+  const createItems = leaders
+    .sort((a, b) => a.time - b.time)
+    .map(leader => {
+      let time = `${Math.floor(leader.time / 60)}:${leader.time % 60}`;
+      position++;
+      return (
+        <li className={styles.box}>
+          <h2 className={styles.position}>№ {position}</h2>
+          <h2 className={styles.name}>{leader.name}</h2>
+          <div className={styles.achievements}>В будущем добавим достижения</div>
+          <h2 className={styles.time}>{time}</h2>
+        </li>
+      );
+    });
 
   return (
     <div className={styles.container}>
