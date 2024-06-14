@@ -6,6 +6,10 @@ import { EndGameModal } from "../../components/EndGameModal/EndGameModal";
 import { Button } from "../../components/Button/Button";
 import { Card } from "../../components/Card/Card";
 import useEasyMode from "../../hooks/useEasyMode.jsx";
+import firstImg from "../image/epiphany.png";
+//import secondImg from "../image/alohomora.png";
+import usedFirstImg from "../image/used_epiphany.png";
+//import usedSecondImg from "../image/used_alohomora.png";
 
 // Игра закончилась
 const STATUS_LOST = "STATUS_LOST";
@@ -51,7 +55,12 @@ function getTimerValue(startDate, endDate) {
  * previewSeconds - сколько секунд пользователь будет видеть все карты открытыми до начала игры
  */
 export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
+  const [achievements, setAchievements] = useState([1, 2]);
+  // Лёгкий режим
   const { easyMode } = useEasyMode();
+  if (easyMode) {
+    setAchievements(prevAchievements => prevAchievements.filter(achievement => achievement !== 1));
+  }
   //Счётчик ошибок
   const [errors, setErrors] = useState(0);
   function addErrors() {
@@ -61,6 +70,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   const [cards, setCards] = useState([]);
   // Текущий статус игры
   const [status, setStatus] = useState(STATUS_PREVIEW);
+  const [superpowers, setSuperpowers] = useState([1, 2]);
 
   // Дата начала игры
   const [gameStartDate, setGameStartDate] = useState(null);
@@ -145,8 +155,10 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     if (easyMode) {
       if (openCardsWithoutPair.length >= 2) {
         addErrors();
-        const closeCards = updateCardStates(nextCards, openCardsWithoutPair);
-        setCards(closeCards);
+        setTimeout(() => {
+          const closeCards = updateCardStates(nextCards, openCardsWithoutPair);
+          setCards(closeCards);
+        }, 2000);
       }
 
       playerLost = errors;
@@ -162,6 +174,23 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
 
     // ... игра продолжается
   };
+
+  // Кнопки суперсил
+
+  function firstSuperpower() {
+    setAchievements(prevAchievements => prevAchievements.filter(achievement => achievement !== 2));
+    setSuperpowers(prevSuperpowers => prevSuperpowers.filter(superpower => superpower !== 1));
+    const closeCard = cards.filter(card => card.open === false);
+    closeCard.map(card => (card.open = true));
+    setTimeout(() => {
+      closeCard.map(card => (card.open = false));
+    }, 5000);
+  }
+
+  /*function secondSuperpower() {
+    setAchievements(prevAchievements => prevAchievements.filter(achievement => achievement !== 2));
+    setSuperpowers(prevSuperpowers => prevSuperpowers.filter(superpower => superpower !== 2));
+  }*/
 
   const isGameEnded = status === STATUS_LOST || status === STATUS_WON;
 
@@ -226,12 +255,28 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
                   <div className={styles.timerDescription}>attempts</div>
                   <div>{3 - errors}</div>
                 </div>
-              ) : (
-                <></>
-              )}
+              ) : null}
             </>
           )}
         </div>
+        {status === STATUS_IN_PROGRESS ? (
+          <div className={styles.boxbtn}>
+            {superpowers.includes(1) ? (
+              <button className={styles.button} onClick={firstSuperpower} id="btn-epiphany">
+                <img src={firstImg} alt='Суперсила "Прозрение"' />
+              </button>
+            ) : (
+              <img src={usedFirstImg} alt='Использованная "Прозрение"' />
+            )}
+            {/* {superpowers.includes(2) ? (
+              <button className={styles.button} onClick={secondSuperpower} id="btn-alohomora">
+                <img src={secondImg} alt='Суперсила "Алохомора"' />
+              </button>
+            ) : (
+              <img src={usedSecondImg} alt='Использованная "Алохомора"' />
+            )} */}
+          </div>
+        ) : null}
         {status === STATUS_IN_PROGRESS ? <Button onClick={resetGame}>Начать заново</Button> : null}
       </div>
 
@@ -254,6 +299,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
             gameDurationSeconds={timer.seconds}
             gameDurationMinutes={timer.minutes}
             onClick={resetGame}
+            achievements={achievements}
           />
         </div>
       ) : null}

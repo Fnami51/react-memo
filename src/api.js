@@ -8,7 +8,7 @@ function cheakOnline() {
 
 export function getLeaders() {
   cheakOnline();
-  return fetch("https://wedev-api.sky.pro/api/leaderboard", {
+  return fetch("https://wedev-api.sky.pro/api/v2/leaderboard", {
     method: "GET",
   }).then(response => {
     if (response.ok) {
@@ -19,13 +19,14 @@ export function getLeaders() {
   });
 }
 
-export function postLeaders({ name, time }) {
+export function postLeaders({ name, time, achievements }) {
   cheakOnline();
-  return fetch("https://wedev-api.sky.pro/api/leaderboard", {
+  return fetch("https://wedev-api.sky.pro/api/v2/leaderboard", {
     method: "POST",
     body: JSON.stringify({
       name,
       time,
+      achievements,
     }),
   }).then(response => {
     if (response.ok) {

@@ -37,6 +37,9 @@ export function SelectLevelPage() {
             <p className={styles.subtext}>У вас будет 3 попытки</p>
           </div>
         </label>
+        <Link className={styles.leaderboardLink} to={"/leaderboard"}>
+          Открыть таблицу лидеров
+        </Link>
       </div>
     </div>
   );

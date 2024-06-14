@@ -63,12 +63,12 @@
   color: #0080c1;
 }
 
-.label{
+.label {
   display: flex;
   column-gap: 10px;
 }
 
-.text{
+.text {
   font-family: StratosSkyeng;
   color: #004980;
   font-size: 18px;
@@ -76,10 +76,21 @@
   line-height: 32px;
 }
 
-.subtext{
+.subtext {
   font-family: StratosSkyeng;
   color: #004980;
   font-size: 12px;
   font-weight: 300;
   padding-left: 4px;
+}
+
+.leaderboardLink {
+  color: #565eef;
+  margin-top: 18px;
+  margin-bottom: 12px;
+  font-family: StratosSkyeng;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 32px;
+  text-align: center;
 }

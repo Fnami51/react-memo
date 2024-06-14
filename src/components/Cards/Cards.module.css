@@ -75,3 +75,22 @@
 
   margin-bottom: -12px;
 }
+
+.boxbtn {
+  display: flex;
+  gap: 15px;
+  height: 68px;
+}
+
+.button{
+  width: 68px;
+  height: 68px;
+  border-radius: 50px;
+  background-color: #C2F5FF;
+  border: none;
+  transition: all 0.3s;
+}
+
+.button:hover {
+  transform: scale(1.1);
+}

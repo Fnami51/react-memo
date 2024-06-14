@@ -8,12 +8,13 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { postLeaders } from "../../api";
 
-export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, onClick }) {
+export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, onClick, achievements }) {
   const newTime = gameDurationMinutes * 60 + gameDurationSeconds;
 
   const [newLeader, setUserInLeaders] = useState({
     name: "Аноним",
     time: newTime,
+    achievements,
   });
 
   const title = isWon ? "Вы победили!" : "Вы проиграли!";
@@ -32,12 +33,14 @@ export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, 
     <div className={styles.modal}>
       <img className={styles.image} src={imgSrc} alt={imgAlt} />
       <h2 className={styles.title}>{title}</h2>
-      <input
-        className={styles.input}
-        type="text"
-        placeholder="Пользователь"
-        onChange={e => setUserInLeaders({ ...newLeader, name: e.target.value })}
-      />
+      {isWon ? (
+        <input
+          className={styles.input}
+          type="text"
+          placeholder="Пользователь"
+          onChange={e => setUserInLeaders({ ...newLeader, name: e.target.value })}
+        />
+      ) : null}
       <p className={styles.description}>Затраченное время:</p>
       <div className={styles.time}>
         {gameDurationMinutes.toString().padStart("2", "0")}.{gameDurationSeconds.toString().padStart("2", "0")}

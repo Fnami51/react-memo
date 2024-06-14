@@ -4,6 +4,11 @@ import { getLeaders } from "../../api.js";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import firstAchievements from "../../components/image/yes_first_medal.png";
+import firstOmission from "../../components/image/no_first_medal.png";
+import secondAchievements from "../../components/image/yes_second_medal.png";
+import secondOmission from "../../components/image/no_second_medal.png";
+
 export function LeaderboardPage() {
   const [leaders, setLeaders] = useState([]);
   let navigate = useNavigate();
@@ -27,10 +32,21 @@ export function LeaderboardPage() {
       let time = `${Math.floor(leader.time / 60)}:${leader.time % 60}`;
       position++;
       return (
-        <li className={styles.box}>
+        <li className={styles.box} key={leader.id}>
           <h2 className={styles.position}>№ {position}</h2>
           <h2 className={styles.name}>{leader.name}</h2>
-          <div className={styles.achievements}>В будущем добавим достижения</div>
+          <div className={styles.achievements}>
+            {leader.achievements.includes(1) ? (
+              <img src={firstAchievements} alt="Игра пройдена в сложном режиме" />
+            ) : (
+              <img src={firstOmission} alt="Игра пройдена в лёгком режиме" />
+            )}
+            {leader.achievements.includes(2) ? (
+              <img src={secondAchievements} alt="Игра пройдена без супер сил" />
+            ) : (
+              <img src={secondOmission} alt="Игра пройдена с супер силами" />
+            )}
+          </div>
           <h2 className={styles.time}>{time}</h2>
         </li>
       );
