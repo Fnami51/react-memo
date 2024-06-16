@@ -7,5 +7,5 @@ module.exports = {
   bracketSpacing: true,
   arrowParens: "avoid",
   htmlWhitespaceSensitivity: "ignore",
-  endOfLine: 'auto'
+  endOfLine: "auto",
 };
